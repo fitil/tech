@@ -2,9 +2,10 @@ let webpack = require('webpack');
 let path = require('path');
 
 const ExtractTextPlugin = require("extract-text-webpack-plugin");
+const HtmlWebpackPlugin = require('html-webpack-plugin');
 
 const extractSass = new ExtractTextPlugin({
-  filename: "../css/styles.css",
+  filename: "css/styles.css",
   disable: process.env.NODE_ENV === "development"
 });
 
@@ -17,15 +18,23 @@ module.exports = {
   },
   watchOptions: { aggregateTimeout: 100, poll: 100 },
   output: {
-    path: path.resolve(__dirname, 'public/js'),
-    filename: 'bundle.js',
-    publicPath: './public',
-    sourceMapFilename: 'bundle.map'
+    path: path.resolve(__dirname, 'public'),
+    publicPath: './',
+    filename: 'js/bundle.js'
   },
-  devtool: '#source-map',
   module: {
     rules: [
       { test: /\.js$/, loader: 'imports-loader?define=>false'},
+      { 
+        test: /\.pug$/, 
+        use: [
+          {
+            loader: 'html-loader'
+          }, {
+            loader: 'pug-html-loader'
+          }
+        ]
+      },
       {
         test: /\.sass$/,
         use: extractSass.extract({
@@ -45,7 +54,7 @@ module.exports = {
             options: {
               name: '[name].[ext]',
               publicPath: '',
-              outputPath: '../img/'
+              outputPath: '/img/'
             }
           },
           {
@@ -55,11 +64,24 @@ module.exports = {
       },  
       
       { test: /\.(woff|woff2|ttf|eot)/, loader: 'url-loader?limit=1' },
-      { test: /\.js$/, loader: 'babel-loader', exclude: [/node_modules/, /public/] },
+      { 
+        test: /\.js$/,
+        use: {
+          loader: 'babel-loader',
+          options: {
+          }
+        },
+        exclude: [/node_modules/, /public/] 
+      },
       { test: /\.jsx$/, loader: 'babel-loader', exclude: [/node_modules/, /public/] }
     ]
   },
   plugins: [
-     extractSass
+     extractSass,
+     new HtmlWebpackPlugin({
+       hash: true,
+       filename: 'index.html',
+       template: './src/template/index.pug'
+     })
   ]
 };
