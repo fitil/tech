@@ -1,5 +1,7 @@
 import textureCrop from './resize'
+import perlinNoise from './perlin'
 
 export {
-    textureCrop    
+    textureCrop,
+    perlinNoise    
 }

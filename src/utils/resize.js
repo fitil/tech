@@ -5,11 +5,13 @@ textureCrop = (sprite, winx, winy) => {
     let pos = new PIXI.Point(0,0)
 
     if (winRatio > spriteRatio) {
-        scale = winx/sprite.width
+        scale = (winx+200)/sprite.width
         pos.y = -((sprite.height*scale)-winy)/2
+        pos.x = -100
     } else {
-        scale = winy/sprite.height
+        scale = (winy+200)/sprite.height
         pos.x = -((sprite.width*scale)-winx)/2
+        pos.y = -100
     }
 
     sprite.scale = new PIXI.Point(scale, scale)
